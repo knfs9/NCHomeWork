@@ -9,7 +9,7 @@ public class GroundVisor {
     public boolean hasObstacles(int length, int width) throws GroundVisorException{
         if(length > ground.getLength() || width > ground.getWidth())
             throw new GroundVisorException();
-        return false;
+        return ground.getCell(length, width).getState() == CellState.OCCUPIED;
     }
     public void setGround(Ground ground){
         this.ground = ground;

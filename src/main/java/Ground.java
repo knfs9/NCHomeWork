@@ -12,7 +12,7 @@ public class Ground {
         landscape = new GroundCell[this.length][this.width];
         for(int i = 0; i < landscape.length; i++){
             for(int j = 0; j < landscape[i].length; j++){
-                landscape[i][j] = new GroundCell();
+                landscape[i][j] = new GroundCell(i,j);
             }
         }
     }
@@ -23,5 +23,9 @@ public class Ground {
 
     public int getWidth() {
         return width;
+    }
+
+    public GroundCell getCell(int i, int j){
+        return landscape[i][j];
     }
 }
