@@ -1,3 +1,5 @@
+package ground;
+
 /**
  * Created by RTCCD on 06.03.2016.
  */
@@ -6,7 +8,7 @@ public class Ground {
     private int length;
     private int width;
 
-    Ground(int length, int width){
+    public Ground(int length, int width){
         this.length = length;
         this.width = width;
         landscape = new GroundCell[this.length][this.width];
