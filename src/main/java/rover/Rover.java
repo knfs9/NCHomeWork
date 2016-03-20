@@ -14,6 +14,7 @@ public class Rover implements Turnable, Moveable, ProgramFileAware {
 
     public Rover(){
         visor = new GroundVisor();
+        programParser = new RoverCommandParser(this);
     }
 
     @Override
@@ -37,8 +38,8 @@ public class Rover implements Turnable, Moveable, ProgramFileAware {
 
     @Override
     public void executeProgramFile(String filename){
-        programParser = new RoverCommandParser(this, filename);
-        for(int i = 0; i < programParser.getSize(); i++){
+        programParser.parse(filename);
+        while (programParser.hasNext()){
             programParser.readNextCommand().execute();
         }
     }

@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,30 +22,37 @@ public class RoverCommandParser {
     private String filename;
     private ArrayList<RoverCommand> commands;
     private Rover rover;
-    private int pos;
-    private int size;
+    private Iterator<RoverCommand> iterator;
+    private static final String WORDPATTERN = "\\D+";
 
     public RoverCommand readNextCommand(){
-        return commands.get(pos++);
+        return iterator.next();
     }
 
-    public int getSize(){
-        return commands.size();
+    public boolean hasNext(){
+        return iterator.hasNext();
     }
 
     /**
      * Constructor create collections with commands
      * @param rover
-     * @param filename
      * @see TurnCommand
      * @see MoveCommand
      */
-    public RoverCommandParser(Rover rover, String filename){
-        if(filename.equals("") || filename == null)
-            throw new IllegalArgumentException("Invalid file name");
-        this.filename = filename;
+    public RoverCommandParser(Rover rover){
         this.rover = rover;
         commands = new ArrayList<>();
+    }
+
+    public RoverCommandParser(Rover rover, String filename){
+        this.rover = rover;
+        this.filename = filename;
+        commands = new ArrayList<>();
+    }
+
+    public void parse(String filename){
+        if(filename.equals("") || filename == null)
+            throw new IllegalArgumentException("Invalid file name");
         Path file = Paths.get(filename);
         String line;
         try(InputStream in = Files.newInputStream(file)) {
@@ -55,6 +63,7 @@ public class RoverCommandParser {
         }catch (IOException e) {
             e.printStackTrace();
         }
+        iterator = commands.iterator();
     }
 
     /**
@@ -63,12 +72,11 @@ public class RoverCommandParser {
      * @return Returns the command received from file string
      */
     private RoverCommand checkCommand(String str){
-        RoverCommand command = null;
         str = str.toLowerCase();
         if(str.equals("") || str == null)
             throw new IllegalArgumentException("Invalid command");
         if(str.contains("move")){
-            Pattern pattern = Pattern.compile("\\D+");
+            Pattern pattern = Pattern.compile(WORDPATTERN);
             Matcher matcher = pattern.matcher(str);
             String coords = matcher.replaceFirst("");
             String[] mass = coords.split(" ");
@@ -78,29 +86,10 @@ public class RoverCommandParser {
             int y = Integer.parseInt(mass[1]);
             return new MoveCommand(rover,x,y);
         }else if(str.contains("turn")){
-            String dirStr = str.replace("turn","");
-            Direction direction = parseDirection(dirStr);
-            return new TurnCommand(rover, direction);
+            String dirStr = str.replace("turn","").trim().toUpperCase();
+            return new TurnCommand(rover, Direction.valueOf(dirStr));
         }else {
             throw new IllegalArgumentException("Invalid command: " + str);
         }
-
-    }
-
-    /**
-     *
-     * @param str Direction string
-     * @return Direction
-     */
-    private Direction parseDirection(String str){
-        Direction dir = null;
-        switch (str.trim().toLowerCase()){
-            case "north" : dir = Direction.NORTH; break;
-            case "east" : dir =  Direction.EAST; break;
-            case "south" : dir =  Direction.SOUTH; break;
-            case "west" : dir =  Direction.WEST; break;
-
-        }
-        return dir;
     }
 }
