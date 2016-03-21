@@ -2,9 +2,7 @@ package rover.command;
 
 import rover.Moveable;
 
-/**
- * Created by RTCCD on 14.03.2016.
- */
+
 public class MoveCommand implements RoverCommand {
     private Moveable rover;
     private int x;
@@ -19,5 +17,10 @@ public class MoveCommand implements RoverCommand {
         this.x = x;
         this.y = y;
         this.rover = rover;
+    }
+
+    @Override
+    public String toString() {
+        return "MOVE";
     }
 }

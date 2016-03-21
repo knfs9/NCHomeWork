@@ -1,8 +1,6 @@
 package ground;
 
-/**
- * Created by RTCCD on 06.03.2016.
- */
+
 public class Ground {
     private GroundCell[][] landscape;
     private int length;

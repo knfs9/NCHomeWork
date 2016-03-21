@@ -2,9 +2,7 @@ package rover;
 
 import ground.GroundVisor;
 
-/**
- * Created by RTCCD on 01.03.2016.
- */
+
 public class Rover implements Turnable, Moveable, ProgramFileAware {
     private int x;
     private int y;

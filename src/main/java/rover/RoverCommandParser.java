@@ -1,9 +1,9 @@
 package rover;
 
 
-import rover.command.MoveCommand;
-import rover.command.RoverCommand;
-import rover.command.TurnCommand;
+import exceptions.FileCycleException;
+import rover.command.*;
+import sun.rmi.runtime.Log;
 
 
 import java.io.*;
@@ -11,19 +11,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by RTCCD on 14.03.2016.
- */
+
 public class RoverCommandParser {
     private String filename;
     private ArrayList<RoverCommand> commands;
     private Rover rover;
     private Iterator<RoverCommand> iterator;
     private static final String WORDPATTERN = "\\D+";
+    private static ArrayList<String> files = new ArrayList<>();
 
     public RoverCommand readNextCommand(){
         return iterator.next();
@@ -50,20 +50,29 @@ public class RoverCommandParser {
         commands = new ArrayList<>();
     }
 
-    public void parse(String filename){
-        if(filename.equals("") || filename == null)
+    private ArrayList<RoverCommand> parseFile(String filename){
+        ArrayList<RoverCommand> temp = new ArrayList<>();
+        if(filename == null || filename.equals(""))
             throw new IllegalArgumentException("Invalid file name");
         Path file = Paths.get(filename);
         String line;
         try(InputStream in = Files.newInputStream(file)) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             while((line = reader.readLine()) != null){
-                commands.add(checkCommand(line));
+                if(line.equals("") || line.trim().startsWith("//"))
+                    continue;
+                temp.add(checkCommand(line));
             }
         }catch (IOException e) {
             e.printStackTrace();
         }
-        iterator = commands.iterator();
+        iterator = temp.iterator();
+        return temp;
+    }
+
+    public void parse(String filename){
+        files.add(filename);
+        this.commands =  parseFile(filename);
     }
 
     /**
@@ -71,7 +80,7 @@ public class RoverCommandParser {
      * @param str String from the file
      * @return Returns the command received from file string
      */
-    private RoverCommand checkCommand(String str){
+    private RoverCommand checkCommand(String str) throws FileNotFoundException {
         str = str.toLowerCase();
         if(str.equals("") || str == null)
             throw new IllegalArgumentException("Invalid command");
@@ -84,10 +93,20 @@ public class RoverCommandParser {
                 throw new IllegalArgumentException("Invalid command: " + str);
             int x = Integer.parseInt(mass[0]);
             int y = Integer.parseInt(mass[1]);
-            return new MoveCommand(rover,x,y);
+            return new LoggingCommand(new MoveCommand(rover,x,y)) ;
         }else if(str.contains("turn")){
             String dirStr = str.replace("turn","").trim().toUpperCase();
-            return new TurnCommand(rover, Direction.valueOf(dirStr));
+            return new LoggingCommand(new TurnCommand(rover, Direction.valueOf(dirStr)));
+        }else if(str.contains("import")){
+            String filepath = str.replace("import","").trim();
+            if(!files.contains(filepath)){
+                files.add(filepath);
+            }else {
+                throw new FileCycleException("Cycle file : " + filepath);
+            }
+            if(!Files.exists(Paths.get(filepath)))
+                throw new FileNotFoundException("File not found");
+            return new LoggingCommand(new ImportCommand(parseFile(filepath)));
         }else {
             throw new IllegalArgumentException("Invalid command: " + str);
         }

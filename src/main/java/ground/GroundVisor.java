@@ -2,9 +2,7 @@ package ground;
 
 import exceptions.GroundVisorException;
 
-/**
- * Created by RTCCD on 06.03.2016.
- */
+
 public class GroundVisor {
     private Ground ground;
 
