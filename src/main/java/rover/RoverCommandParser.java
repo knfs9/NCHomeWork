@@ -52,8 +52,6 @@ public class RoverCommandParser {
 
     private ArrayList<RoverCommand> parseFile(String filename){
         ArrayList<RoverCommand> temp = new ArrayList<>();
-        if(filename == null || filename.equals(""))
-            throw new IllegalArgumentException("Invalid file name");
         Path file = Paths.get(filename);
         String line;
         try(InputStream in = Files.newInputStream(file)) {
@@ -71,6 +69,8 @@ public class RoverCommandParser {
     }
 
     public void parse(String filename){
+        if(filename == null || filename.equals(""))
+            throw new IllegalArgumentException("Invalid file name");
         files.add(filename);
         this.commands =  parseFile(filename);
     }
@@ -82,7 +82,7 @@ public class RoverCommandParser {
      */
     private RoverCommand checkCommand(String str) throws FileNotFoundException {
         str = str.toLowerCase();
-        if(str.equals("") || str == null)
+        if(str.equals(""))
             throw new IllegalArgumentException("Invalid command");
         if(str.contains("move")){
             Pattern pattern = Pattern.compile(WORDPATTERN);
