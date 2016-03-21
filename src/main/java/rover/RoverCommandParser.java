@@ -75,6 +75,10 @@ public class RoverCommandParser {
         return temp;
     }
 
+    /**
+     * Parse given file
+     * @param filename
+     */
     public void parse(String filename){
         if(filename == null || filename.equals(""))
             throw new IllegalArgumentException("Invalid file name");
@@ -86,6 +90,7 @@ public class RoverCommandParser {
      * Parse line from file
      * @param str String from the file
      * @return Returns the command received from file string
+     * @see RoverCommand
      */
     private RoverCommand checkCommand(String str) throws FileNotFoundException {
         str = str.toLowerCase();

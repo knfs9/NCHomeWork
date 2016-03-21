@@ -4,12 +4,15 @@ import rover.Rover;
 
 import java.util.List;
 
-
+/**
+ * A command that allows you to import a file with instructions to another.
+ */
 public class ImportCommand implements RoverCommand {
     private List<RoverCommand> commands;
     public ImportCommand(List<RoverCommand> commands){
         this.commands = commands;
     }
+
     @Override
     public void execute() {
         for(RoverCommand c: commands){
