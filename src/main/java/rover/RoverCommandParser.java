@@ -50,6 +50,12 @@ public class RoverCommandParser {
         commands = new ArrayList<>();
     }
 
+    /**
+     * Parse file
+     * @param filename
+     * @return Collection of RoverCommands
+     * @see RoverCommand
+     */
     private ArrayList<RoverCommand> parseFile(String filename){
         ArrayList<RoverCommand> temp = new ArrayList<>();
         Path file = Paths.get(filename);
@@ -57,6 +63,7 @@ public class RoverCommandParser {
         try(InputStream in = Files.newInputStream(file)) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             while((line = reader.readLine()) != null){
+                //check for line break or comment
                 if(line.equals("") || line.trim().startsWith("//"))
                     continue;
                 temp.add(checkCommand(line));
@@ -76,7 +83,7 @@ public class RoverCommandParser {
     }
 
     /**
-     *
+     * Parse line from file
      * @param str String from the file
      * @return Returns the command received from file string
      */
