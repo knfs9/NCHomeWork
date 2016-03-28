@@ -17,7 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class RoverCommandParser {
+public class TextRoverCommandParser {
     private String filename;
     private ArrayList<RoverCommand> commands;
     private Rover rover;
@@ -39,12 +39,12 @@ public class RoverCommandParser {
      * @see TurnCommand
      * @see MoveCommand
      */
-    public RoverCommandParser(Rover rover){
+    public TextRoverCommandParser(Rover rover){
         this.rover = rover;
         commands = new ArrayList<>();
     }
 
-    public RoverCommandParser(Rover rover, String filename){
+    public TextRoverCommandParser(Rover rover, String filename){
         this.rover = rover;
         this.filename = filename;
         commands = new ArrayList<>();

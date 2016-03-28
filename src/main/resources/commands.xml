@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commands>
+    <move x="10" y="10"/>
+    <turn direction="east"/>
+    <move x="13" y="22"/>
+    <turn direction="west"/>
+    <import>commands2</import>
+</commands>

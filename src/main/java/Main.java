@@ -9,7 +9,8 @@ public class Main {
         r.getVisor().setGround(new Ground(30,30));
         //r.executeProgramFile("commands2");
         //r.executeProgramFile("wrongcommands2");
-        r.executeProgramFile("commands");
+       // r.executeProgramFile("commands");
+        r.executeProgramFile("/commands.xml");
 
     }
 

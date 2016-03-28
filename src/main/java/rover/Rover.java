@@ -8,11 +8,13 @@ public class Rover implements Turnable, Moveable, ProgramFileAware {
     private int y;
     private Direction direction;
     private GroundVisor visor;
-    private RoverCommandParser programParser;
+    private TextRoverCommandParser programParser;
+    private XmlRoverCommandParser xmlProgramParser;
 
     public Rover(){
         visor = new GroundVisor();
-        programParser = new RoverCommandParser(this);
+        programParser = new TextRoverCommandParser(this);
+        xmlProgramParser = new XmlRoverCommandParser(this);
     }
 
     @Override
@@ -36,9 +38,13 @@ public class Rover implements Turnable, Moveable, ProgramFileAware {
 
     @Override
     public void executeProgramFile(String filename){
-        programParser.parse(filename);
+       /* programParser.parse(filename);
         while (programParser.hasNext()){
             programParser.readNextCommand().execute();
+        }*/
+        xmlProgramParser.parse(filename);
+        while (xmlProgramParser.hasNext()){
+            xmlProgramParser.readNextCommand().execute();
         }
     }
 

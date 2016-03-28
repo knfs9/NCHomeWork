@@ -26,6 +26,6 @@ public class Ground {
     }
 
     public GroundCell getCell(int i, int j){
-        return landscape[i][j];
+            return landscape[i][j];
     }
 }
