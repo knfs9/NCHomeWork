@@ -9,6 +9,8 @@ import java.util.List;
  */
 public class ImportCommand implements RoverCommand {
     private List<RoverCommand> commands;
+    private String filename;
+
     public ImportCommand(List<RoverCommand> commands){
         this.commands = commands;
     }
@@ -23,5 +25,9 @@ public class ImportCommand implements RoverCommand {
     @Override
     public String toString() {
         return "IMPORT ";
+    }
+
+    public String getFilename(){
+        return filename;
     }
 }

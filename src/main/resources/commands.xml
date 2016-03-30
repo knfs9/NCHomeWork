@@ -4,5 +4,5 @@
     <turn direction="east"/>
     <move x="13" y="22"/>
     <turn direction="west"/>
-    <import>commands2</import>
+    <import>commands2.xml</import>
 </commands>

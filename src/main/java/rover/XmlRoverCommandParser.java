@@ -38,14 +38,17 @@ public class XmlRoverCommandParser {
         commands = new ArrayList<>();
     }
 
-    public void parse(String filename){
+    public ArrayList<RoverCommand> parse(String filename){
         SAXParserFactory factory = SAXParserFactory.newInstance();
         SAXParser saxParser = null;
+
         SAXHandler saxHandler = new SAXHandler(rover);
         try {
             saxParser = factory.newSAXParser();
+            System.out.println(filename);
             saxParser.parse(new File(this.getClass().getResource(filename).toURI())
                                                                       ,saxHandler);
+
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         } catch (SAXException e) {
@@ -57,37 +60,45 @@ public class XmlRoverCommandParser {
         }
         commands = saxHandler.getCommands();
         iterator = commands.iterator();
-    }
-}
-
-class SAXHandler extends DefaultHandler{
-    private ArrayList<RoverCommand> commands = new ArrayList<>();
-    private Rover rover;
-    private boolean imp;
-    public SAXHandler(Rover rover){
-        this.rover = rover;
-    }
-    public ArrayList<RoverCommand> getCommands(){
         return commands;
     }
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        if(qName.equalsIgnoreCase("move")){
-            int x = Integer.parseInt(attributes.getValue("x"));
-            int y = Integer.parseInt(attributes.getValue("y"));
-            commands.add(new LoggingCommand(new MoveCommand(rover,x,y)));
-        }else if(qName.equalsIgnoreCase("turn")){
-            Direction direction = Direction.valueOf(attributes.getValue("direction").toUpperCase());
-            commands.add(new LoggingCommand(new TurnCommand(rover,direction)));
-        }else if(qName.equalsIgnoreCase("import")){
-            imp = true;
-        }
-    }
 
-    @Override
-    public void characters(char[] ch, int start, int length) throws SAXException {
-        if(imp){
-            commands.add(new LoggingCommand(new ImportCommand()));
+    class SAXHandler extends DefaultHandler{
+        private ArrayList<RoverCommand> commands = new ArrayList<>();
+        private Rover rover;
+        private boolean imp;
+        public String filename;
+        public SAXHandler(Rover rover){
+            this.rover = rover;
         }
+        public ArrayList<RoverCommand> getCommands(){
+            return commands;
+        }
+        @Override
+        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+            if(qName.equalsIgnoreCase("move")){
+                int x = Integer.parseInt(attributes.getValue("x"));
+                int y = Integer.parseInt(attributes.getValue("y"));
+                commands.add(new LoggingCommand(new MoveCommand(rover,x,y)));
+            }else if(qName.equalsIgnoreCase("turn")){
+                Direction direction = Direction.valueOf(attributes.getValue("direction").toUpperCase());
+                commands.add(new LoggingCommand(new TurnCommand(rover,direction)));
+            }else if(qName.equalsIgnoreCase("import")){
+                imp = true;
+            }
+        }
+
+        @Override
+        public void characters(char[] ch, int start, int length) throws SAXException {
+            if(imp){
+                filename = new String(ch,start,length);
+                commands.add(new LoggingCommand(new ImportCommand(parse("/" + filename))));
+                imp = false;
+            }
+        }
+
+
     }
 }
+
+
